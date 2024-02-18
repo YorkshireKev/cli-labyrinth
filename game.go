@@ -7,10 +7,11 @@ import (
 )
 
 type Game struct {
-	screen tcell.Screen
-	xPos   int
-	yPos   int
-	dir    int //1 North, 2 East, 3 South, 4 West
+	screen  tcell.Screen
+	xPos    int
+	yPos    int
+	dir     int //1 North, 2 East, 3 South, 4 West
+	mapView bool
 }
 
 func (g *Game) init() {
@@ -24,6 +25,7 @@ func (g *Game) init() {
 	g.xPos = 1
 	g.yPos = 1
 	g.dir = 1
+	g.mapView = false
 
 	if err := screen.Init(); err != nil {
 		fmt.Printf("Error initializing screen: %s\n", err)
@@ -44,15 +46,14 @@ func (g *Game) gameLoop() {
 				//Quit the game
 				return
 			}
-			if ev.Key() == tcell.KeyRune {
+			switch ev.Key() {
+			case tcell.KeyRune:
 				if ev.Rune() == 'm' {
 					//Show the maze in full
-					g.PrintMaze(*maze)
+					g.mapView = true
+				} else {
+					g.mapView = false
 				}
-			}
-			switch ev.Key() {
-			case 'm':
-				g.PrintMaze(*maze) //Show the full maze
 			case tcell.KeyLeft:
 				g.dir-- //Rotate left
 				if g.dir == 0 {
@@ -65,15 +66,23 @@ func (g *Game) gameLoop() {
 				}
 			case tcell.KeyUp:
 				switch g.dir {
-				case 1: //Move forward one square
-					//TODO CHECK BOUNDS!
-					g.yPos--
+				//Move forward one square if not blocked.
+				case 1:
+					if !maze.getMazeBlock(g.xPos, g.yPos-1) {
+						g.yPos--
+					}
 				case 2:
-					g.xPos++
+					if !maze.getMazeBlock(g.xPos+1, g.yPos) {
+						g.xPos++
+					}
 				case 3:
-					g.yPos++
+					if !maze.getMazeBlock(g.xPos, g.yPos+1) {
+						g.yPos++
+					}
 				case 4:
-					g.xPos--
+					if !maze.getMazeBlock(g.xPos-1, g.yPos) {
+						g.xPos--
+					}
 				}
 			}
 		case *tcell.EventResize:
@@ -81,14 +90,20 @@ func (g *Game) gameLoop() {
 		}
 
 		//Update gamestate
+		if g.mapView {
+			//Show the maze in full (Cheat!)
+			g.PrintMaze(*maze)
+		} else {
+			// Draw the game screen
+			g.DrawScreen(*maze)
+		}
 
-		//Draw the game screen
-		g.DrawScreen(*maze)
+		//Need any kind of pause here? to limit FPS?
 	}
 }
 
 func (g Game) DrawScreen(m Maze) {
-	//TODO - Draw a portion of the maze. Add coordinates to the game struct!
+	//TODO - Draw the 3d view of the maze.
 	style := tcell.StyleDefault.Foreground(tcell.ColorWhite).Background(tcell.ColorBlack)
 	g.screen.SetContent(1, 23, 'X', nil, style)
 	g.screen.Show()

@@ -81,3 +81,7 @@ func (m *Maze) getNeighbors(row, col int) []Cell {
 func (m *Maze) isValidMove(row, col int) bool {
 	return row > 0 && row < m.rows && col > 0 && col < m.cols && m.grid[row][col]
 }
+
+func (m *Maze) getMazeBlock(col, row int) bool {
+	return m.grid[row][col]
+}
