@@ -1,4 +1,4 @@
-module mazeterm
+module cli-labyrinth
 
 go 1.21.6
 
