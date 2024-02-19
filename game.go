@@ -8,8 +8,8 @@ import (
 
 type Game struct {
 	screen  tcell.Screen
-	xPos    int
-	yPos    int
+	colPos  int
+	rowPos  int
 	dir     int //1 North, 2 East, 3 South, 4 West
 	mapView bool
 }
@@ -22,8 +22,8 @@ func (g *Game) init() {
 	}
 	//defer screen.Fini()
 	//Set initial character postitions etc
-	g.xPos = 1
-	g.yPos = 1
+	g.colPos = 1
+	g.rowPos = 1
 	g.dir = 1
 	g.mapView = false
 
@@ -32,8 +32,12 @@ func (g *Game) init() {
 		return
 	}
 	g.screen = screen
-
 	g.screen.Clear()
+
+	//Default text on main game screen.
+	g.PrintString(2, 22, "Left Arrow: Rotate Left.  Right Arrow: Rotate Right.  Up Arrow: Move Forward")
+	g.PrintString(0, 23, "Press M to cheat and display the maze map")
+	g.PrintString(54, 23, "Press Esc to exit the game")
 }
 
 func (g *Game) gameLoop() {
@@ -68,20 +72,20 @@ func (g *Game) gameLoop() {
 				switch g.dir {
 				//Move forward one square if not blocked.
 				case 1:
-					if !maze.getMazeBlock(g.xPos, g.yPos-1) {
-						g.yPos--
+					if !maze.getMazeBlock(g.rowPos-1, g.colPos) {
+						g.rowPos--
 					}
 				case 2:
-					if !maze.getMazeBlock(g.xPos+1, g.yPos) {
-						g.xPos++
+					if !maze.getMazeBlock(g.rowPos, g.colPos+1) {
+						g.colPos++
 					}
 				case 3:
-					if !maze.getMazeBlock(g.xPos, g.yPos+1) {
-						g.yPos++
+					if !maze.getMazeBlock(g.rowPos+1, g.colPos) {
+						g.rowPos++
 					}
 				case 4:
-					if !maze.getMazeBlock(g.xPos-1, g.yPos) {
-						g.xPos--
+					if !maze.getMazeBlock(g.rowPos, g.colPos-1) {
+						g.colPos--
 					}
 				}
 			}
@@ -103,13 +107,78 @@ func (g *Game) gameLoop() {
 }
 
 func (g Game) DrawScreen(m Maze) {
-	//TODO - Draw the 3d view of the maze.
-	style := tcell.StyleDefault.Foreground(tcell.ColorWhite).Background(tcell.ColorBlack)
-	g.screen.SetContent(1, 23, 'X', nil, style)
+	//Draw the 3d view of the maze based on where the player is standing
+	//and the direction they are facing.
+
+	//style := tcell.StyleDefault.Foreground(tcell.ColorWhite).Background(tcell.ColorBlack)
+	//g.screen.Clear()
+
+	var viewPort [6][3]bool
+	var block rune
+
+	//TODO - populate the viewPort grid with the view from the player!!
+	switch g.dir {
+	case 1:
+		//Facing North
+		for ix := 0; ix < 6; ix++ {
+			// Iterate over rows
+			for iy := 0; iy < 3; iy++ {
+				viewPort[ix][iy] = m.getMazeBlock((ix+g.rowPos)-5, (iy+g.colPos)-1)
+
+			}
+		}
+	case 2:
+		//Facing East
+		for ix := 0; ix < 6; ix++ {
+			// Iterate over rows
+			for iy := 0; iy < 3; iy++ {
+				viewPort[5-ix][iy] = m.getMazeBlock((g.rowPos+iy)-1, g.colPos+ix)
+
+			}
+		}
+	case 3:
+		//Facing South
+		for ix := 0; ix < 6; ix++ {
+			// Iterate over rows
+			for iy := 0; iy < 3; iy++ {
+				viewPort[5-ix][2-iy] = m.getMazeBlock(ix+g.rowPos, (iy+g.colPos)-1)
+
+			}
+		}
+	case 4:
+		//Facing West
+		for ix := 0; ix < 6; ix++ {
+			// Iterate over rows
+			for iy := 0; iy < 3; iy++ {
+				viewPort[ix][2-iy] = m.getMazeBlock((g.rowPos+iy)-1, g.colPos+ix-5)
+
+			}
+		}
+	}
+
+	// Iterate over rows
+	for ix := 0; ix < 6; ix++ {
+		// Iterate over columns
+		for iy := 0; iy < 3; iy++ {
+			if viewPort[ix][iy] {
+				block = '█'
+			} else {
+				block = ' '
+			}
+			// Set content at position (ix, iy)
+			//TODO - This is to render the viewport!!
+			g.screen.SetContent((iy*2)+74, ix, block, nil, tcell.StyleDefault)
+			g.screen.SetContent((iy*2)+75, ix, block, nil, tcell.StyleDefault)
+			g.screen.SetContent(76, 5, 'X', nil, tcell.StyleDefault)
+			g.screen.SetContent(77, 5, 'X', nil, tcell.StyleDefault)
+		}
+	}
+
 	g.screen.Show()
 }
 
 func (g *Game) PrintMaze(m Maze) {
+	//Draw the full map on the screen as a 2d grid.
 	style := tcell.StyleDefault.Foreground(tcell.ColorWhite).Background(tcell.ColorBlack)
 
 	for i := 0; i < m.rows; i++ {
@@ -139,8 +208,14 @@ func (g *Game) PrintMaze(m Maze) {
 	case 4:
 		dirRune = '←' // U+2190
 	}
-	g.screen.SetContent(g.xPos*2, g.yPos, 'A', nil, style)
-	g.screen.SetContent((g.xPos*2)+1, g.yPos, dirRune, nil, style)
+	g.screen.SetContent(g.colPos*2, g.rowPos, 'A', nil, style)
+	g.screen.SetContent((g.colPos*2)+1, g.rowPos, dirRune, nil, style)
 
 	g.screen.Show()
+}
+
+func (g *Game) PrintString(x, y int, str string) {
+	for i, ch := range str {
+		g.screen.SetContent(x+i, y, ch, nil, tcell.StyleDefault)
+	}
 }

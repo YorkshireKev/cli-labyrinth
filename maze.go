@@ -82,6 +82,11 @@ func (m *Maze) isValidMove(row, col int) bool {
 	return row > 0 && row < m.rows && col > 0 && col < m.cols && m.grid[row][col]
 }
 
-func (m *Maze) getMazeBlock(col, row int) bool {
-	return m.grid[row][col]
+func (m *Maze) getMazeBlock(row, col int) bool {
+	if row >= 0 && row < len(m.grid) && col >= 0 && col < len(m.grid[0]) {
+		return m.grid[row][col]
+	} else {
+		//if the array indexes are our of bounds of the array, just return false.
+		return false
+	}
 }
