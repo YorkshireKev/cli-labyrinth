@@ -31,6 +31,9 @@ func (g *Game) init() {
 		fmt.Printf("Error initializing screen: %s\n", err)
 		return
 	}
+	screen.SetStyle(tcell.StyleDefault.
+		Background(tcell.ColorWhite).
+		Foreground(tcell.ColorBlack))
 	g.screen = screen
 	g.screen.Clear()
 
@@ -156,6 +159,9 @@ func (g Game) DrawScreen(m Maze) {
 		}
 	}
 
+	g.screen.Clear()
+
+	//TEMP - Draw 2d representation of the viewport
 	// Iterate over rows
 	for ix := 0; ix < 6; ix++ {
 		// Iterate over columns
@@ -172,6 +178,74 @@ func (g Game) DrawScreen(m Maze) {
 			g.screen.SetContent(76, 5, 'X', nil, tcell.StyleDefault)
 			g.screen.SetContent(77, 5, 'X', nil, tcell.StyleDefault)
 		}
+	}
+
+	if viewPort[3][0] {
+		for ix := 6; ix < 13; ix++ {
+			g.PrintString(18, ix, "██")
+			if ix > 6 && ix < 12 {
+				g.PrintString(21, ix, "██")
+			}
+			if ix > 7 && ix < 11 {
+				g.PrintString(24, ix, "██")
+			}
+		}
+	} else {
+		for ix := 7; ix < 11; ix++ {
+			g.PrintString(18, ix, "░░░░░░")
+		}
+	}
+
+	if viewPort[3][1] {
+		for ix := 7; ix < 11; ix++ {
+			g.PrintString(24, ix, "░░░░░░░░")
+		}
+	}
+
+	if viewPort[4][0] {
+		for ix := 3; ix < 16; ix++ {
+			g.PrintString(10, ix, "███")
+			if ix > 3 && ix < 15 {
+				g.PrintString(13, ix, "███")
+			}
+			if ix > 4 && ix < 14 {
+				g.PrintString(16, ix, "██")
+			}
+		}
+	} else {
+		for ix := 5; ix < 14; ix++ {
+			g.PrintString(10, ix, "░░░░░░░░")
+		}
+	}
+
+	if viewPort[4][1] {
+		for ix := 3; ix < 16; ix++ {
+			g.PrintString(10, ix, "░░░░░░░░░░░░░░░░░░░░░░░░")
+		}
+	}
+
+	//Closest wall left
+	if viewPort[5][0] {
+		for ix := 0; ix < 19; ix++ {
+			g.PrintString(0, ix, "████")
+			if ix > 0 && ix < 18 {
+				g.PrintString(4, ix, "███")
+			}
+			if ix > 1 && ix < 17 {
+				g.PrintString(7, ix, "███")
+			}
+		}
+	} else {
+		for ix := 3; ix < 16; ix++ {
+			g.PrintString(0, ix, "░░░░░░░░░░")
+		}
+	}
+
+	//Closest wall middle is where the player is standing, so nothing to draw.
+
+	//Closest wall right
+	if viewPort[5][2] {
+
 	}
 
 	g.screen.Show()
@@ -215,7 +289,9 @@ func (g *Game) PrintMaze(m Maze) {
 }
 
 func (g *Game) PrintString(x, y int, str string) {
-	for i, ch := range str {
-		g.screen.SetContent(x+i, y, ch, nil, tcell.StyleDefault)
+	ix := 0 //Set the index for printing on the x axis. This is because runes can be more than 8 bits.
+	for _, ch := range str {
+		g.screen.SetContent(x+ix, y, ch, nil, tcell.StyleDefault)
+		ix++
 	}
 }
