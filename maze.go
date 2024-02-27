@@ -54,6 +54,8 @@ func (m *Maze) generateMaze() {
 	endRow, endCol := m.rows-2, m.cols-2
 	m.end = Cell{endRow, endCol}
 	m.grid[endRow][endCol] = false
+
+	m.grid[m.rows-1][m.cols-2] = false
 }
 
 type Cell struct {

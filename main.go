@@ -4,7 +4,8 @@ var maze *Maze
 
 func main() {
 
-	rows, cols := 21, 37
+	//rows, cols := 21, 37
+	rows, cols := 11, 13
 	maze = NewMaze(rows, cols)
 	maze.generateMaze()
 

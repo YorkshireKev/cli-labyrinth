@@ -7,11 +7,13 @@ import (
 )
 
 type Game struct {
-	screen  tcell.Screen
-	colPos  int
-	rowPos  int
-	dir     int //1 North, 2 East, 3 South, 4 West
-	mapView bool
+	screen   tcell.Screen
+	colPos   int
+	rowPos   int
+	dir      int //1 North, 2 East, 3 South, 4 West
+	mapView  bool
+	mapShown int //How many times the map was shown
+	steps    uint
 }
 
 func (g *Game) init() {
@@ -26,6 +28,8 @@ func (g *Game) init() {
 	g.rowPos = 1
 	g.dir = 1
 	g.mapView = false
+	g.mapShown = 0
+	g.steps = 0
 
 	if err := screen.Init(); err != nil {
 		fmt.Printf("Error initializing screen: %s\n", err)
@@ -77,19 +81,27 @@ func (g *Game) gameLoop() {
 				case 1:
 					if !maze.getMazeBlock(g.rowPos-1, g.colPos) {
 						g.rowPos--
+						g.steps++
 					}
 				case 2:
 					if !maze.getMazeBlock(g.rowPos, g.colPos+1) {
 						g.colPos++
+						g.steps++
 					}
 				case 3:
 					if !maze.getMazeBlock(g.rowPos+1, g.colPos) {
 						g.rowPos++
+						g.steps++
 					}
 				case 4:
 					if !maze.getMazeBlock(g.rowPos, g.colPos-1) {
 						g.colPos--
+						g.steps++
 					}
+				}
+				//Ensure the number of steps isn't too big to display
+				if g.steps > 999999 {
+					g.steps = 999999
 				}
 			}
 		case *tcell.EventResize:
@@ -117,7 +129,6 @@ func (g Game) DrawScreen(m Maze) {
 	//g.screen.Clear()
 
 	var viewPort [6][3]bool
-	var block rune
 
 	//TODO - populate the viewPort grid with the view from the player!!
 	switch g.dir {
@@ -160,15 +171,11 @@ func (g Game) DrawScreen(m Maze) {
 	}
 
 	//Clear the maze viewport area of the screen
-	for ix := 0; ix < 22; ix++ {
-		// Iterate over columns
-		for iy := 0; iy < 72; iy++ {
-			g.screen.SetContent(iy, ix, ' ', nil, tcell.StyleDefault)
-		}
-	}
+	g.ClearScreen()
 
-	//TEMP - Draw 2d representation of the viewport
+	//FOR DEBUG ONLY - Draw the rotated viewport
 	// Iterate over rows
+	/*var block rune
 	for ix := 0; ix < 6; ix++ {
 		// Iterate over columns
 		for iy := 0; iy < 3; iy++ {
@@ -184,8 +191,8 @@ func (g Game) DrawScreen(m Maze) {
 			g.screen.SetContent(76, 5, 'X', nil, tcell.StyleDefault)
 			g.screen.SetContent(77, 5, 'X', nil, tcell.StyleDefault)
 		}
-	}
-	//TEMP END
+	}*/
+	//END - Draw the rotated viewport
 
 	//Can only see so far...
 	g.PrintString(33, 10, "...")
@@ -225,8 +232,8 @@ func (g Game) DrawScreen(m Maze) {
 			}
 		}
 	} else {
-		for ix := 9; ix < 13; ix++ {
-			g.PrintString(27, ix, "░░░")
+		for ix := 10; ix < 12; ix++ {
+			g.PrintString(24, ix, "░░░░░░")
 		}
 	}
 
@@ -238,14 +245,14 @@ func (g Game) DrawScreen(m Maze) {
 			}
 		}
 	} else {
-		for ix := 9; ix < 13; ix++ {
-			g.PrintString(39, ix, "░░░")
+		for ix := 10; ix < 12; ix++ {
+			g.PrintString(39, ix, "░░░░░░")
 		}
 	}
 
 	if viewPort[2][1] {
 		for ix := 9; ix < 13; ix++ {
-			g.PrintString(30, ix, "░░░░░░░░░░░")
+			g.PrintString(30, ix, "░░░░░░░░░")
 		}
 	}
 	//====================================
@@ -279,7 +286,7 @@ func (g Game) DrawScreen(m Maze) {
 
 	if viewPort[3][1] {
 		for ix := 7; ix < 15; ix++ {
-			g.PrintString(24, ix, "░░░░░░░░░░░░░░░░░░░░░░░")
+			g.PrintString(24, ix, "░░░░░░░░░░░░░░░░░░░░░")
 		}
 	}
 	//====================================
@@ -362,12 +369,19 @@ func (g Game) DrawScreen(m Maze) {
 	}
 	//====================================
 
+	//If near the exit then cull the side walls that were drawn beyond the exit.
+	g.CullExitSideWalls(*maze)
+
+	g.DrawSidebar()
+
 	g.screen.Show()
 }
 
 func (g *Game) PrintMaze(m Maze) {
 	//Draw the full map on the screen as a 2d grid.
 	style := tcell.StyleDefault.Foreground(tcell.ColorBlack).Background(tcell.ColorWhite)
+
+	g.ClearScreen()
 
 	for i := 0; i < m.rows; i++ {
 		for j := 0; j < m.cols; j++ {
@@ -399,6 +413,8 @@ func (g *Game) PrintMaze(m Maze) {
 	g.screen.SetContent(g.colPos*2, g.rowPos, 'A', nil, style)
 	g.screen.SetContent((g.colPos*2)+1, g.rowPos, dirRune, nil, style)
 
+	g.mapShown++
+
 	g.screen.Show()
 }
 
@@ -407,5 +423,75 @@ func (g *Game) PrintString(x, y int, str string) {
 	for _, ch := range str {
 		g.screen.SetContent(x+ix, y, ch, nil, tcell.StyleDefault)
 		ix++
+	}
+}
+
+func (g *Game) ClearScreen() {
+	for ix := 0; ix < 22; ix++ {
+		// Iterate over columns
+		for iy := 0; iy < 80; iy++ {
+			g.screen.SetContent(iy, ix, ' ', nil, tcell.StyleDefault)
+		}
+	}
+}
+
+func (g *Game) DrawSidebar() {
+	g.PrintString(74, 4, "N")
+	g.PrintString(74, 5, "|")
+	g.PrintString(71, 6, "<--+-->")
+	g.PrintString(74, 7, "|")
+	g.PrintString(74, 8, "S")
+	switch g.dir {
+	case 1:
+		g.PrintString(74, 3, "*")
+	case 2:
+		g.PrintString(78, 6, "*")
+	case 3:
+		g.PrintString(74, 9, "*")
+	case 4:
+		g.PrintString(70, 6, "*")
+	}
+
+	if g.mapShown > 0 {
+		g.PrintString(70, 17, "Map Show")
+		if g.mapShown > 25 {
+			g.PrintString(70, 18, "25+ Times")
+		} else {
+			g.PrintString(70, 18, fmt.Sprint(g.mapShown)+" Times")
+		}
+	}
+	if g.mapShown > 50 {
+		g.mapShown = 50 //Prevent int out of range errors
+	}
+
+	g.PrintString(72, 12, "Steps")
+	steps := fmt.Sprint(g.steps)
+	g.PrintString(72, 13, steps)
+
+}
+
+func (g Game) CullExitSideWalls(m Maze) {
+	if g.dir == 3 && g.colPos == (m.cols-2) {
+		switch g.rowPos {
+		case m.rows - 5:
+			g.PrintString(33, 10, "   ")
+			g.PrintString(33, 11, "   ")
+		case m.rows - 4:
+			g.PrintString(30, 10, "         ")
+			g.PrintString(30, 11, "         ")
+		case m.rows - 3:
+			g.PrintString(24, 10, "                     ")
+			g.PrintString(24, 11, "                     ")
+		case m.rows - 2:
+			for ix := 8; ix < 14; ix++ {
+				g.PrintString(18, ix, "                                 ")
+			}
+		case m.rows - 1:
+			for ix := 2; ix < 20; ix++ {
+				g.PrintString(9, ix, "                                                   ")
+			}
+		case m.rows:
+			g.ClearScreen()
+		}
 	}
 }
