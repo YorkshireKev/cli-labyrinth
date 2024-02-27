@@ -163,7 +163,7 @@ func (g Game) DrawScreen(m Maze) {
 	for ix := 0; ix < 22; ix++ {
 		// Iterate over columns
 		for iy := 0; iy < 72; iy++ {
-			g.screen.SetContent(iy, ix, '.', nil, tcell.StyleDefault)
+			g.screen.SetContent(iy, ix, ' ', nil, tcell.StyleDefault)
 		}
 	}
 
@@ -187,9 +187,9 @@ func (g Game) DrawScreen(m Maze) {
 	}
 	//TEMP END
 
-	//Con only see so far...
-	g.PrintString(33, 10, "???")
-	g.PrintString(33, 11, "???")
+	//Can only see so far...
+	g.PrintString(33, 10, "...")
+	g.PrintString(33, 11, "...")
 
 	//====================================
 	if viewPort[1][0] {
@@ -199,6 +199,15 @@ func (g Game) DrawScreen(m Maze) {
 	} else {
 		g.PrintString(30, 10, "░░░")
 		g.PrintString(30, 11, "░░░")
+	}
+
+	if viewPort[1][2] {
+		for ix := 10; ix < 12; ix++ {
+			g.PrintString(36, ix, "███")
+		}
+	} else {
+		g.PrintString(36, 10, "░░░")
+		g.PrintString(36, 11, "░░░")
 	}
 
 	if viewPort[1][1] {
@@ -218,6 +227,19 @@ func (g Game) DrawScreen(m Maze) {
 	} else {
 		for ix := 9; ix < 13; ix++ {
 			g.PrintString(27, ix, "░░░")
+		}
+	}
+
+	if viewPort[2][2] {
+		for ix := 8; ix < 14; ix++ {
+			g.PrintString(42, ix, "███")
+			if ix > 8 && ix < 13 {
+				g.PrintString(39, ix, "███")
+			}
+		}
+	} else {
+		for ix := 9; ix < 13; ix++ {
+			g.PrintString(39, ix, "░░░")
 		}
 	}
 
@@ -242,6 +264,19 @@ func (g Game) DrawScreen(m Maze) {
 		}
 	}
 
+	if viewPort[3][2] {
+		for ix := 6; ix < 16; ix++ {
+			g.PrintString(48, ix, "███")
+			if ix > 6 && ix < 15 {
+				g.PrintString(45, ix, "███")
+			}
+		}
+	} else {
+		for ix := 8; ix < 14; ix++ {
+			g.PrintString(45, ix, "░░░░░░")
+		}
+	}
+
 	if viewPort[3][1] {
 		for ix := 7; ix < 15; ix++ {
 			g.PrintString(24, ix, "░░░░░░░░░░░░░░░░░░░░░░░")
@@ -263,6 +298,22 @@ func (g Game) DrawScreen(m Maze) {
 	} else {
 		for ix := 6; ix < 16; ix++ {
 			g.PrintString(9, ix, "░░░░░░░░░")
+		}
+	}
+
+	if viewPort[4][2] {
+		for ix := 3; ix < 19; ix++ {
+			g.PrintString(57, ix, "███")
+			if ix > 3 && ix < 18 {
+				g.PrintString(54, ix, "███")
+			}
+			if ix > 4 && ix < 17 {
+				g.PrintString(51, ix, "███")
+			}
+		}
+	} else {
+		for ix := 6; ix < 16; ix++ {
+			g.PrintString(51, ix, "░░░░░░░░░")
 		}
 	}
 
@@ -295,7 +346,19 @@ func (g Game) DrawScreen(m Maze) {
 
 	//Closest wall right
 	if viewPort[5][2] {
-
+		for ix := 0; ix < 22; ix++ {
+			g.PrintString(66, ix, "███")
+			if ix > 0 && ix < 21 {
+				g.PrintString(63, ix, "███")
+			}
+			if ix > 1 && ix < 20 {
+				g.PrintString(60, ix, "███")
+			}
+		}
+	} else {
+		for ix := 3; ix < 19; ix++ {
+			g.PrintString(60, ix, "░░░░░░░░░")
+		}
 	}
 	//====================================
 
@@ -304,7 +367,7 @@ func (g Game) DrawScreen(m Maze) {
 
 func (g *Game) PrintMaze(m Maze) {
 	//Draw the full map on the screen as a 2d grid.
-	style := tcell.StyleDefault.Foreground(tcell.ColorWhite).Background(tcell.ColorBlack)
+	style := tcell.StyleDefault.Foreground(tcell.ColorBlack).Background(tcell.ColorWhite)
 
 	for i := 0; i < m.rows; i++ {
 		for j := 0; j < m.cols; j++ {
