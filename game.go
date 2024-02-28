@@ -16,13 +16,7 @@ type Game struct {
 	steps    uint
 }
 
-func (g *Game) init() {
-	screen, err := tcell.NewScreen()
-	if err != nil {
-		fmt.Printf("Error creating screen: %s\n", err)
-		return
-	}
-	//defer screen.Fini()
+func (g *Game) init(screen tcell.Screen) {
 	//Set initial character postitions etc
 	g.colPos = maze.cols - 2
 	g.rowPos = maze.rows - 2
@@ -31,20 +25,13 @@ func (g *Game) init() {
 	g.mapShown = 0
 	g.steps = 0
 
-	if err := screen.Init(); err != nil {
-		fmt.Printf("Error initializing screen: %s\n", err)
-		return
-	}
-	screen.SetStyle(tcell.StyleDefault.
-		Background(tcell.ColorWhite).
-		Foreground(tcell.ColorBlack))
 	g.screen = screen
 	g.screen.Clear()
 
 	//Default text on main game screen.
-	g.PrintString(2, 22, "Left Arrow: Rotate Left.  Right Arrow: Rotate Right.  Up Arrow: Move Forward")
-	g.PrintString(0, 23, "Press M to cheat and display the maze map")
-	g.PrintString(54, 23, "Press Esc to exit the game")
+	PrintString(2, 22, "Left Arrow: Rotate Left.  Right Arrow: Rotate Right.  Up Arrow: Move Forward")
+	PrintString(0, 23, "Press M to cheat and display the maze map")
+	PrintString(54, 23, "Press Esc to exit the game")
 }
 
 func (g *Game) gameLoop() {
@@ -195,64 +182,64 @@ func (g Game) DrawScreen(m Maze) {
 	//END - Draw the rotated viewport
 
 	//Can only see so far...
-	g.PrintString(33, 10, "...")
-	g.PrintString(33, 11, "...")
+	PrintString(33, 10, "...")
+	PrintString(33, 11, "...")
 
 	//====================================
 	if viewPort[1][0] {
 		for ix := 10; ix < 12; ix++ {
-			g.PrintString(30, ix, "███")
+			PrintString(30, ix, "███")
 		}
 	} else {
-		g.PrintString(30, 10, "░░░")
-		g.PrintString(30, 11, "░░░")
+		PrintString(30, 10, "░░░")
+		PrintString(30, 11, "░░░")
 	}
 
 	if viewPort[1][2] {
 		for ix := 10; ix < 12; ix++ {
-			g.PrintString(36, ix, "███")
+			PrintString(36, ix, "███")
 		}
 	} else {
-		g.PrintString(36, 10, "░░░")
-		g.PrintString(36, 11, "░░░")
+		PrintString(36, 10, "░░░")
+		PrintString(36, 11, "░░░")
 	}
 
 	if viewPort[1][1] {
-		g.PrintString(33, 10, "░░░")
-		g.PrintString(33, 11, "░░░")
+		PrintString(33, 10, "░░░")
+		PrintString(33, 11, "░░░")
 	}
 	//====================================
 
 	//====================================
 	if viewPort[2][0] {
 		for ix := 8; ix < 14; ix++ {
-			g.PrintString(24, ix, "███")
+			PrintString(24, ix, "███")
 			if ix > 8 && ix < 13 {
-				g.PrintString(27, ix, "███")
+				PrintString(27, ix, "███")
 			}
 		}
 	} else {
 		for ix := 10; ix < 12; ix++ {
-			g.PrintString(24, ix, "░░░░░░")
+			PrintString(24, ix, "░░░░░░")
 		}
 	}
 
 	if viewPort[2][2] {
 		for ix := 8; ix < 14; ix++ {
-			g.PrintString(42, ix, "███")
+			PrintString(42, ix, "███")
 			if ix > 8 && ix < 13 {
-				g.PrintString(39, ix, "███")
+				PrintString(39, ix, "███")
 			}
 		}
 	} else {
 		for ix := 10; ix < 12; ix++ {
-			g.PrintString(39, ix, "░░░░░░")
+			PrintString(39, ix, "░░░░░░")
 		}
 	}
 
 	if viewPort[2][1] {
 		for ix := 9; ix < 13; ix++ {
-			g.PrintString(30, ix, "░░░░░░░░░")
+			PrintString(30, ix, "░░░░░░░░░")
 		}
 	}
 	//====================================
@@ -260,33 +247,33 @@ func (g Game) DrawScreen(m Maze) {
 	//====================================
 	if viewPort[3][0] {
 		for ix := 6; ix < 16; ix++ {
-			g.PrintString(18, ix, "███")
+			PrintString(18, ix, "███")
 			if ix > 6 && ix < 15 {
-				g.PrintString(21, ix, "███")
+				PrintString(21, ix, "███")
 			}
 		}
 	} else {
 		for ix := 8; ix < 14; ix++ {
-			g.PrintString(18, ix, "░░░░░░")
+			PrintString(18, ix, "░░░░░░")
 		}
 	}
 
 	if viewPort[3][2] {
 		for ix := 6; ix < 16; ix++ {
-			g.PrintString(48, ix, "███")
+			PrintString(48, ix, "███")
 			if ix > 6 && ix < 15 {
-				g.PrintString(45, ix, "███")
+				PrintString(45, ix, "███")
 			}
 		}
 	} else {
 		for ix := 8; ix < 14; ix++ {
-			g.PrintString(45, ix, "░░░░░░")
+			PrintString(45, ix, "░░░░░░")
 		}
 	}
 
 	if viewPort[3][1] {
 		for ix := 7; ix < 15; ix++ {
-			g.PrintString(24, ix, "░░░░░░░░░░░░░░░░░░░░░")
+			PrintString(24, ix, "░░░░░░░░░░░░░░░░░░░░░")
 		}
 	}
 	//====================================
@@ -294,39 +281,39 @@ func (g Game) DrawScreen(m Maze) {
 	//====================================
 	if viewPort[4][0] {
 		for ix := 3; ix < 19; ix++ {
-			g.PrintString(9, ix, "███")
+			PrintString(9, ix, "███")
 			if ix > 3 && ix < 18 {
-				g.PrintString(12, ix, "███")
+				PrintString(12, ix, "███")
 			}
 			if ix > 4 && ix < 17 {
-				g.PrintString(15, ix, "███")
+				PrintString(15, ix, "███")
 			}
 		}
 	} else {
 		for ix := 6; ix < 16; ix++ {
-			g.PrintString(9, ix, "░░░░░░░░░")
+			PrintString(9, ix, "░░░░░░░░░")
 		}
 	}
 
 	if viewPort[4][2] {
 		for ix := 3; ix < 19; ix++ {
-			g.PrintString(57, ix, "███")
+			PrintString(57, ix, "███")
 			if ix > 3 && ix < 18 {
-				g.PrintString(54, ix, "███")
+				PrintString(54, ix, "███")
 			}
 			if ix > 4 && ix < 17 {
-				g.PrintString(51, ix, "███")
+				PrintString(51, ix, "███")
 			}
 		}
 	} else {
 		for ix := 6; ix < 16; ix++ {
-			g.PrintString(51, ix, "░░░░░░░░░")
+			PrintString(51, ix, "░░░░░░░░░")
 		}
 	}
 
 	if viewPort[4][1] {
 		for ix := 3; ix < 19; ix++ {
-			g.PrintString(9, ix, "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
+			PrintString(9, ix, "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
 		}
 	}
 	//====================================
@@ -335,17 +322,17 @@ func (g Game) DrawScreen(m Maze) {
 	//Closest wall left
 	if viewPort[5][0] {
 		for ix := 0; ix < 22; ix++ {
-			g.PrintString(0, ix, "███")
+			PrintString(0, ix, "███")
 			if ix > 0 && ix < 21 {
-				g.PrintString(3, ix, "███")
+				PrintString(3, ix, "███")
 			}
 			if ix > 1 && ix < 20 {
-				g.PrintString(6, ix, "███")
+				PrintString(6, ix, "███")
 			}
 		}
 	} else {
 		for ix := 3; ix < 19; ix++ {
-			g.PrintString(0, ix, "░░░░░░░░░")
+			PrintString(0, ix, "░░░░░░░░░")
 		}
 	}
 
@@ -354,17 +341,17 @@ func (g Game) DrawScreen(m Maze) {
 	//Closest wall right
 	if viewPort[5][2] {
 		for ix := 0; ix < 22; ix++ {
-			g.PrintString(66, ix, "███")
+			PrintString(66, ix, "███")
 			if ix > 0 && ix < 21 {
-				g.PrintString(63, ix, "███")
+				PrintString(63, ix, "███")
 			}
 			if ix > 1 && ix < 20 {
-				g.PrintString(60, ix, "███")
+				PrintString(60, ix, "███")
 			}
 		}
 	} else {
 		for ix := 3; ix < 19; ix++ {
-			g.PrintString(60, ix, "░░░░░░░░░")
+			PrintString(60, ix, "░░░░░░░░░")
 		}
 	}
 	//====================================
@@ -415,13 +402,13 @@ func (g *Game) PrintMaze(m Maze) {
 	g.screen.Show()
 }
 
-func (g *Game) PrintString(x, y int, str string) {
+/*func (g *Game) PrintString(x, y int, str string) {
 	ix := 0 //Set the index for printing on the x axis. This is because runes can be more than 8 bits.
 	for _, ch := range str {
 		g.screen.SetContent(x+ix, y, ch, nil, tcell.StyleDefault)
 		ix++
 	}
-}
+}*/
 
 func (g *Game) ClearScreen() {
 	for ix := 0; ix < 22; ix++ {
@@ -433,37 +420,37 @@ func (g *Game) ClearScreen() {
 }
 
 func (g *Game) DrawSidebar() {
-	g.PrintString(74, 4, "N")
-	g.PrintString(74, 5, "|")
-	g.PrintString(71, 6, "<--+-->")
-	g.PrintString(74, 7, "|")
-	g.PrintString(74, 8, "S")
+	PrintString(74, 4, "N")
+	PrintString(74, 5, "|")
+	PrintString(71, 6, "<--+-->")
+	PrintString(74, 7, "|")
+	PrintString(74, 8, "S")
 	switch g.dir {
 	case 1:
-		g.PrintString(74, 3, "*")
+		PrintString(74, 3, "*")
 	case 2:
-		g.PrintString(78, 6, "*")
+		PrintString(78, 6, "*")
 	case 3:
-		g.PrintString(74, 9, "*")
+		PrintString(74, 9, "*")
 	case 4:
-		g.PrintString(70, 6, "*")
+		PrintString(70, 6, "*")
 	}
 
 	if g.mapShown > 0 {
-		g.PrintString(70, 17, "Map Show")
+		PrintString(70, 17, "Map Show")
 		if g.mapShown > 25 {
-			g.PrintString(70, 18, "25+ Times")
+			PrintString(70, 18, "25+ Times")
 		} else {
-			g.PrintString(70, 18, fmt.Sprint(g.mapShown)+" Times")
+			PrintString(70, 18, fmt.Sprint(g.mapShown)+" Times")
 		}
 	}
 	if g.mapShown > 50 {
 		g.mapShown = 50 //Prevent int out of range errors
 	}
 
-	g.PrintString(72, 12, "Steps")
+	PrintString(72, 12, "Steps")
 	steps := fmt.Sprint(g.steps)
-	g.PrintString(72, 13, steps)
+	PrintString(72, 13, steps)
 
 }
 
@@ -471,21 +458,21 @@ func (g Game) CullExitSideWalls(m Maze) {
 	if g.dir == 1 && g.colPos == 1 {
 		switch g.rowPos {
 		case 4:
-			g.PrintString(33, 10, "   ")
-			g.PrintString(33, 11, "   ")
+			PrintString(33, 10, "   ")
+			PrintString(33, 11, "   ")
 		case 3:
-			g.PrintString(30, 10, "         ")
-			g.PrintString(30, 11, "         ")
+			PrintString(30, 10, "         ")
+			PrintString(30, 11, "         ")
 		case 2:
-			g.PrintString(24, 10, "                     ")
-			g.PrintString(24, 11, "                     ")
+			PrintString(24, 10, "                     ")
+			PrintString(24, 11, "                     ")
 		case 1:
 			for ix := 8; ix < 14; ix++ {
-				g.PrintString(18, ix, "                                 ")
+				PrintString(18, ix, "                                 ")
 			}
 		case 0:
 			for ix := 2; ix < 20; ix++ {
-				g.PrintString(9, ix, "                                                   ")
+				PrintString(9, ix, "                                                   ")
 			}
 		case -1:
 			g.ClearScreen()

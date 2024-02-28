@@ -1,6 +1,6 @@
 module cli-labyrinth
 
-go 1.21
+go 1.20
 
 require github.com/gdamore/tcell v1.4.0
 
