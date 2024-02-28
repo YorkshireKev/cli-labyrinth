@@ -13,19 +13,22 @@ var screen tcell.Screen
 func main() {
 
 	screen = initScreen()
+	for {
+		//rows, cols := 9, 11
+		rows, cols := showTitle()
 
-	showTitle()
+		maze = NewMaze(rows, cols)
+		maze.generateMaze()
 
-	//rows, cols := 21, 37
-	rows, cols := 9, 11
-	maze = NewMaze(rows, cols)
-	maze.generateMaze()
+		game := &Game{}
+		game.init(screen)
+		if game.gameLoop() {
+			//Player has escaped the maze!
+			showEscapedScreen()
+		}
+	}
 
-	game := &Game{}
-	game.init(screen)
-	game.gameLoop()
-
-	game.screen.Fini()
+	//game.screen.Fini()
 }
 
 func initScreen() tcell.Screen {
@@ -49,7 +52,8 @@ func initScreen() tcell.Screen {
 	return screen
 }
 
-func showTitle() {
+func showTitle() (rows int, cols int) {
+	screen.Clear()
 	PrintString(29, 0, "Command Line Interface")
 	PrintString(6, 2, "#          #    ######  #     # ######  ### #     # ####### #     #")
 	PrintString(6, 3, "#         # #   #     #  #   #  #     #  #  ##    #    #    #     #")
@@ -59,6 +63,7 @@ func showTitle() {
 	PrintString(6, 7, "#       #     # #     #    #    #    #   #  #    ##    #    #     #")
 	PrintString(6, 8, "####### #     # ######     #    #     # ### #     #    #    #     #")
 	PrintString(31, 10, "©2024 By Kev Ellis")
+	PrintString(37, 11, "(v0.1)")
 	PrintString(2, 16, "Please select your maze size: Press S for Small, M for Medium or L for Large")
 	PrintString(15, 23, "Press Esc or Ctrl-C to Quit to exit this program")
 	screen.Show()
@@ -70,8 +75,66 @@ func showTitle() {
 		case *tcell.EventKey:
 			if ev.Key() == tcell.KeyCtrlC || ev.Key() == tcell.KeyEsc {
 				//Quit the game
+				screen.Fini()
+				os.Exit(0)
+			}
+			if ev.Key() == tcell.KeyRune {
+				if ev.Rune() == 's' {
+					//Small Map
+					return 9, 11
+				}
+				if ev.Rune() == 'm' {
+					//Medium Map
+					return 15, 23
+				}
+				if ev.Rune() == 'l' {
+					//Large Map
+					return 23, 37
+				}
+			}
+		case *tcell.EventResize:
+			screen.Sync()
+		}
+	}
+}
+
+func showEscapedScreen() {
+	screen.Clear()
+	PrintString(30, 0, "** Congratulations **")
+	PrintString(9, 2, "#     # ####### #     #     #     #    #    #     # #######")
+	PrintString(9, 3, " #   #  #     # #     #     #     #   # #   #     # #")
+	PrintString(9, 4, "  # #   #     # #     #     #     #  #   #  #     # # ")
+	PrintString(9, 5, "   #    #     # #     #     ####### #     # #     # #####")
+	PrintString(9, 6, "   #    #     # #     #     #     # #######  #   #  #")
+	PrintString(9, 7, "   #    #     # #     #     #     # #     #   # #   #")
+	PrintString(9, 8, "   #    #######  #####      #     # #     #    #    #######")
+	PrintString(9, 10, "#######  #####   #####     #    ######  ####### ######  ###")
+	PrintString(9, 11, "#       #     # #     #   # #   #     # #       #     # ###")
+	PrintString(9, 12, "#       #       #        #   #  #     # #       #     # ###")
+	PrintString(9, 13, "#####    #####  #       #     # ######  #####   #     #  #")
+	PrintString(9, 14, "#             # #       ####### #       #       #     #")
+	PrintString(9, 15, "#       #     # #     # #     # #       #       #     # ###")
+	PrintString(9, 16, "#######  #####   #####  #     # #       ####### ######  ###")
+	PrintString(20, 19, "Poke a key to return to the title screen")
+	PrintString(15, 23, "Press Esc or Ctrl-C to Quit to exit this program")
+
+	screen.Show()
+
+	for {
+		//Handle Keyboard Input
+		ev := screen.PollEvent()
+		switch ev := ev.(type) {
+		case *tcell.EventKey:
+			if ev.Key() == tcell.KeyCtrlC || ev.Key() == tcell.KeyEsc {
+				//Quit the game
+				screen.Fini()
+				os.Exit(0)
+			}
+			if ev.Key() == tcell.KeyRune {
 				return
 			}
+		case *tcell.EventResize:
+			screen.Sync()
 		}
 	}
 }

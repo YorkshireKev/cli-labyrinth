@@ -32,9 +32,11 @@ func (g *Game) init(screen tcell.Screen) {
 	PrintString(2, 22, "Left Arrow: Rotate Left.  Right Arrow: Rotate Right.  Up Arrow: Move Forward")
 	PrintString(0, 23, "Press M to cheat and display the maze map")
 	PrintString(54, 23, "Press Esc to exit the game")
+	g.DrawScreen(*maze)
+
 }
 
-func (g *Game) gameLoop() {
+func (g *Game) gameLoop() bool {
 	for {
 		//Handle Keyboard Input
 		ev := g.screen.PollEvent()
@@ -42,7 +44,7 @@ func (g *Game) gameLoop() {
 		case *tcell.EventKey:
 			if ev.Key() == tcell.KeyCtrlC || ev.Key() == tcell.KeyEsc {
 				//Quit the game
-				return
+				return false
 			}
 			switch ev.Key() {
 			case tcell.KeyRune:
@@ -104,7 +106,13 @@ func (g *Game) gameLoop() {
 			g.DrawScreen(*maze)
 		}
 
-		//Need any kind of pause here? to limit FPS?
+		//If the player gets to column one, but row -1 (outside the maze)
+		//then they have escaped!
+		if g.rowPos == -1 && g.colPos == 1 {
+			return true
+		}
+
+		//No need to add a pause here as the event polling will wait for a keypress.
 	}
 }
 
@@ -117,7 +125,7 @@ func (g Game) DrawScreen(m Maze) {
 
 	var viewPort [6][3]bool
 
-	//TODO - populate the viewPort grid with the view from the player!!
+	//Populate the viewPort grid with the view from the player.
 	switch g.dir {
 	case 1:
 		//Facing North
@@ -360,7 +368,6 @@ func (g Game) DrawScreen(m Maze) {
 	g.CullExitSideWalls(*maze)
 
 	g.DrawSidebar()
-
 	g.screen.Show()
 }
 
