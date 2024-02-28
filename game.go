@@ -24,8 +24,8 @@ func (g *Game) init() {
 	}
 	//defer screen.Fini()
 	//Set initial character postitions etc
-	g.colPos = 1
-	g.rowPos = 1
+	g.colPos = maze.cols - 2
+	g.rowPos = maze.rows - 2
 	g.dir = 1
 	g.mapView = false
 	g.mapShown = 0
@@ -385,10 +385,7 @@ func (g *Game) PrintMaze(m Maze) {
 
 	for i := 0; i < m.rows; i++ {
 		for j := 0; j < m.cols; j++ {
-			if m.end.row == i && m.end.col == j {
-				g.screen.SetContent(j*2, i, '(', nil, style)
-				g.screen.SetContent(j*2+1, i, ')', nil, style)
-			} else if m.grid[i][j] {
+			if m.grid[i][j] {
 				g.screen.SetContent(j*2, i, '█', nil, style)
 				g.screen.SetContent(j*2+1, i, '█', nil, style)
 			} else {
@@ -471,26 +468,26 @@ func (g *Game) DrawSidebar() {
 }
 
 func (g Game) CullExitSideWalls(m Maze) {
-	if g.dir == 3 && g.colPos == (m.cols-2) {
+	if g.dir == 1 && g.colPos == 1 {
 		switch g.rowPos {
-		case m.rows - 5:
+		case 4:
 			g.PrintString(33, 10, "   ")
 			g.PrintString(33, 11, "   ")
-		case m.rows - 4:
+		case 3:
 			g.PrintString(30, 10, "         ")
 			g.PrintString(30, 11, "         ")
-		case m.rows - 3:
+		case 2:
 			g.PrintString(24, 10, "                     ")
 			g.PrintString(24, 11, "                     ")
-		case m.rows - 2:
+		case 1:
 			for ix := 8; ix < 14; ix++ {
 				g.PrintString(18, ix, "                                 ")
 			}
-		case m.rows - 1:
+		case 0:
 			for ix := 2; ix < 20; ix++ {
 				g.PrintString(9, ix, "                                                   ")
 			}
-		case m.rows:
+		case -1:
 			g.ClearScreen()
 		}
 	}

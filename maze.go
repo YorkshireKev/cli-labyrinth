@@ -55,7 +55,8 @@ func (m *Maze) generateMaze() {
 	m.end = Cell{endRow, endCol}
 	m.grid[endRow][endCol] = false
 
-	m.grid[m.rows-1][m.cols-2] = false
+	//m.grid[m.rows-1][m.cols-2] = false
+	m.grid[0][1] = false //Exit always top left
 }
 
 type Cell struct {
