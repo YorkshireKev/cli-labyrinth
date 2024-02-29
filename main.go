@@ -24,7 +24,7 @@ func main() {
 		game.init(screen)
 		if game.gameLoop() {
 			//Player has escaped the maze!
-			showEscapedScreen()
+			showEscapedScreen(game)
 		}
 	}
 
@@ -98,9 +98,9 @@ func showTitle() (rows int, cols int) {
 	}
 }
 
-func showEscapedScreen() {
+func showEscapedScreen(g *Game) {
 	screen.Clear()
-	PrintString(30, 0, "** Congratulations **")
+	PrintString(29, 0, "** Congratulations **")
 	PrintString(9, 2, "#     # ####### #     #     #     #    #    #     # #######")
 	PrintString(9, 3, " #   #  #     # #     #     #     #   # #   #     # #")
 	PrintString(9, 4, "  # #   #     # #     #     #     #  #   #  #     # # ")
@@ -115,7 +115,8 @@ func showEscapedScreen() {
 	PrintString(9, 14, "#             # #       ####### #       #       #     #")
 	PrintString(9, 15, "#       #     # #     # #     # #       #       #     # ###")
 	PrintString(9, 16, "#######  #####   #####  #     # #       ####### ######  ###")
-	PrintString(20, 19, "Poke a key to return to the title screen")
+	PrintString(12, 18, "You took "+fmt.Sprint(g.steps)+" steps and you looked at the map "+fmt.Sprint(g.mapShown)+" times")
+	PrintString(20, 21, "Poke a key to return to the title screen")
 	PrintString(15, 23, "Press Esc or Ctrl-C to Quit to exit this program")
 
 	screen.Show()

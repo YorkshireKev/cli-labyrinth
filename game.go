@@ -50,6 +50,9 @@ func (g *Game) gameLoop() bool {
 			case tcell.KeyRune:
 				if ev.Rune() == 'm' {
 					//Show the maze in full
+					if !g.mapView {
+						g.mapShown++
+					}
 					g.mapView = true
 				} else {
 					g.mapView = false
@@ -403,8 +406,6 @@ func (g *Game) PrintMaze(m Maze) {
 	}
 	g.screen.SetContent(g.colPos*2, g.rowPos, 'A', nil, style)
 	g.screen.SetContent((g.colPos*2)+1, g.rowPos, dirRune, nil, style)
-
-	g.mapShown++
 
 	g.screen.Show()
 }
