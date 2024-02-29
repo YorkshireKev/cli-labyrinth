@@ -53,10 +53,14 @@ func (g *Game) gameLoop() bool {
 				if ev.Rune() == 'm' {
 					//Show the maze in full
 					if !g.mapView {
+						PrintString(2, 22, "       ** Study Carefully, then press a key to return to the game. **       ")
 						g.mapShown++
 					}
 					g.mapView = true
 				} else {
+					if g.mapView {
+						PrintString(2, 22, "Left Arrow: Rotate Left.  Right Arrow: Rotate Right.  Up Arrow: Move Forward")
+					}
 					g.mapView = false
 				}
 			case tcell.KeyLeft:
