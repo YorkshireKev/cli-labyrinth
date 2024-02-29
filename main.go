@@ -11,20 +11,26 @@ var maze *Maze
 var screen tcell.Screen
 
 func main() {
+	//Read the first command line parameter to check for the parameter: --cheat
+	//which will allow the player to move while viewing trhe map.
+	cheat := false
+	if len(os.Args) > 1 && os.Args[1] == "--cheat" {
+		cheat = true
+	}
 
 	screen = initScreen()
 	for {
 		//rows, cols := 9, 11
-		rows, cols := showTitle()
+		rows, cols := showTitle(cheat)
 
 		maze = NewMaze(rows, cols)
 		maze.generateMaze()
 
 		game := &Game{}
-		game.init(screen)
+		game.init(screen, cheat)
 		if game.gameLoop() {
 			//Player has escaped the maze!
-			showEscapedScreen(game)
+			showEscapedScreen(game, cheat)
 		}
 	}
 
@@ -52,7 +58,7 @@ func initScreen() tcell.Screen {
 	return screen
 }
 
-func showTitle() (rows int, cols int) {
+func showTitle(cheat bool) (rows int, cols int) {
 	screen.Clear()
 	PrintString(29, 0, "Command Line Interface")
 	PrintString(6, 2, "#          #    ######  #     # ######  ### #     # ####### #     #")
@@ -66,6 +72,9 @@ func showTitle() (rows int, cols int) {
 	PrintString(37, 11, "(v0.1)")
 	PrintString(2, 16, "Please select your maze size: Press S for Small, M for Medium or L for Large")
 	PrintString(15, 23, "Press Esc or Ctrl-C to Quit to exit this program")
+	if cheat {
+		PrintString(73, 23, "(cheat)")
+	}
 	screen.Show()
 
 	for {
@@ -98,7 +107,7 @@ func showTitle() (rows int, cols int) {
 	}
 }
 
-func showEscapedScreen(g *Game) {
+func showEscapedScreen(g *Game, cheat bool) {
 	screen.Clear()
 	PrintString(29, 0, "** Congratulations **")
 	PrintString(9, 2, "#     # ####### #     #     #     #    #    #     # #######")
@@ -118,7 +127,9 @@ func showEscapedScreen(g *Game) {
 	PrintString(12, 18, "You took "+fmt.Sprint(g.steps)+" steps and you looked at the map "+fmt.Sprint(g.mapShown)+" times")
 	PrintString(20, 21, "Poke a key to return to the title screen")
 	PrintString(15, 23, "Press Esc or Ctrl-C to Quit to exit this program")
-
+	if cheat {
+		PrintString(73, 23, "(cheat)")
+	}
 	screen.Show()
 
 	for {

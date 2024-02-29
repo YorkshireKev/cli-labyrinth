@@ -14,9 +14,10 @@ type Game struct {
 	mapView  bool
 	mapShown int //How many times the map was shown
 	steps    uint
+	cheat    bool
 }
 
-func (g *Game) init(screen tcell.Screen) {
+func (g *Game) init(screen tcell.Screen, cheat bool) {
 	//Set initial character postitions etc
 	g.colPos = maze.cols - 2
 	g.rowPos = maze.rows - 2
@@ -24,6 +25,7 @@ func (g *Game) init(screen tcell.Screen) {
 	g.mapView = false
 	g.mapShown = 0
 	g.steps = 0
+	g.cheat = cheat
 
 	g.screen = screen
 	g.screen.Clear()
@@ -58,42 +60,48 @@ func (g *Game) gameLoop() bool {
 					g.mapView = false
 				}
 			case tcell.KeyLeft:
-				g.dir-- //Rotate left
-				if g.dir == 0 {
-					g.dir = 4
+				if !g.mapView || g.cheat {
+					g.dir-- //Rotate left
+					if g.dir == 0 {
+						g.dir = 4
+					}
 				}
 			case tcell.KeyRight:
-				g.dir++ //Rotate right
-				if g.dir == 5 {
-					g.dir = 1
+				if !g.mapView || g.cheat {
+					g.dir++ //Rotate right
+					if g.dir == 5 {
+						g.dir = 1
+					}
 				}
 			case tcell.KeyUp:
-				switch g.dir {
-				//Move forward one square if not blocked.
-				case 1:
-					if !maze.getMazeBlock(g.rowPos-1, g.colPos) {
-						g.rowPos--
-						g.steps++
+				if !g.mapView || g.cheat {
+					switch g.dir {
+					//Move forward one square if not blocked.
+					case 1:
+						if !maze.getMazeBlock(g.rowPos-1, g.colPos) {
+							g.rowPos--
+							g.steps++
+						}
+					case 2:
+						if !maze.getMazeBlock(g.rowPos, g.colPos+1) {
+							g.colPos++
+							g.steps++
+						}
+					case 3:
+						if !maze.getMazeBlock(g.rowPos+1, g.colPos) {
+							g.rowPos++
+							g.steps++
+						}
+					case 4:
+						if !maze.getMazeBlock(g.rowPos, g.colPos-1) {
+							g.colPos--
+							g.steps++
+						}
 					}
-				case 2:
-					if !maze.getMazeBlock(g.rowPos, g.colPos+1) {
-						g.colPos++
-						g.steps++
+					//Ensure the number of steps isn't too big to display
+					if g.steps > 999999 {
+						g.steps = 999999
 					}
-				case 3:
-					if !maze.getMazeBlock(g.rowPos+1, g.colPos) {
-						g.rowPos++
-						g.steps++
-					}
-				case 4:
-					if !maze.getMazeBlock(g.rowPos, g.colPos-1) {
-						g.colPos--
-						g.steps++
-					}
-				}
-				//Ensure the number of steps isn't too big to display
-				if g.steps > 999999 {
-					g.steps = 999999
 				}
 			}
 		case *tcell.EventResize:
