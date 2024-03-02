@@ -8,9 +8,9 @@ This is my first attempt at writing a terminal game in Go, so please don't expec
 
 ## How to Download and Run
 
-You can clone the repo and build the project using Go, but I've also created pre-built binaries for Linux, MacOS and Windows. You can download the required binary from [itch.io](lhttps://yorkshirekev.itch.io/cli-labyrinth).
+You can clone the repo and build the project using Go, but I've also created pre-built binaries for Linux, MacOS and Windows. You can download the required binary from [itch.io](lhttps://yorkshirekev.itch.io/cli-labyrinth)
 
-To play CLI-Labyrinth, simply navigate to the project directory and run the executable in a Linux or macOS shell:
+To play CLI-Labyrinth, simply unzip the downloaded file into a directory and run the executable in a Linux or macOS shell:
 
 ```bash
 ./cli-labyrinth
