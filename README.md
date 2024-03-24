@@ -8,7 +8,7 @@ This is my first attempt at writing a terminal game in Go, so please don't expec
 
 ## How to Download and Run
 
-You can clone the repo and build the project using Go, but I've also created pre-built binaries for Linux and MacOS. You can download the required binary from [itch.io](https://yorkshirekev.itch.io/cli-labyrinth)
+You can clone the repo and build the project using Go, but I've also created pre-built binaries for Linux and MacOS. You can download the required binary from [itch.io](https://yorkshirekev.itch.io/cli-labyrinth). These pre-built binaries are also available in the [Github release](https://github.com/YorkshireKev/cli-labyrinth/releases)
 
 To play CLI-Labyrinth, simply unzip the downloaded file into a directory and run the executable in a Linux or MacOS shell:
 
@@ -17,6 +17,8 @@ To play CLI-Labyrinth, simply unzip the downloaded file into a directory and run
 ```
 
 Please note that you'll need to ensure that the file has the executable flag set.
+
+If you want to download directly onto a Linux server via the command line, then there are instructions in the [Github release](https://github.com/YorkshireKev/cli-labyrinth/releases)
 
 ## Inspiration
 
