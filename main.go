@@ -3,12 +3,14 @@ package main
 import (
 	"fmt"
 	"os"
+	"runtime"
 
 	"github.com/gdamore/tcell/v2"
 )
 
 var maze *Maze
 var screen tcell.Screen
+var operatingSystem string
 
 func main() {
 	//Read the first command line parameter to check for the parameter: --cheat
@@ -17,6 +19,8 @@ func main() {
 	if len(os.Args) > 1 && os.Args[1] == "--cheat" {
 		cheat = true
 	}
+
+	operatingSystem = runtime.GOOS
 
 	screen = initScreen()
 	for {
@@ -71,7 +75,9 @@ func showTitle(cheat bool) (rows int, cols int) {
 	PrintString(22, 10, "©2024 By Kev Ellis - www.kevssite.com")
 	PrintString(37, 11, "(v0.2)")
 	PrintString(2, 16, "Please select your maze size: Press S for Small, M for Medium or L for Large")
-	PrintString(15, 23, "Press Esc or Ctrl-C to Quit to exit this program")
+	if operatingSystem != "js" {
+		PrintString(15, 23, "Press Esc or Ctrl-C to Quit to exit this program")
+	}
 	if cheat {
 		PrintString(73, 23, "(cheat)")
 	}
@@ -82,10 +88,12 @@ func showTitle(cheat bool) (rows int, cols int) {
 		ev := screen.PollEvent()
 		switch ev := ev.(type) {
 		case *tcell.EventKey:
-			if ev.Key() == tcell.KeyCtrlC || ev.Key() == tcell.KeyEsc {
-				//Quit the game
-				screen.Fini()
-				os.Exit(0)
+			if operatingSystem != "js" {
+				if ev.Key() == tcell.KeyCtrlC || ev.Key() == tcell.KeyEsc {
+					//Quit the game
+					screen.Fini()
+					os.Exit(0)
+				}
 			}
 			if ev.Key() == tcell.KeyRune {
 				if ev.Rune() == 's' {
@@ -126,7 +134,9 @@ func showEscapedScreen(g *Game, cheat bool) {
 	PrintString(9, 16, "#######  #####   #####  #     # #       ####### ######  ###")
 	PrintString(12, 18, "You took "+fmt.Sprint(g.steps)+" steps and you looked at the map "+fmt.Sprint(g.mapShown)+" times")
 	PrintString(20, 21, "Poke a key to return to the title screen")
-	PrintString(15, 23, "Press Esc or Ctrl-C to Quit to exit this program")
+	if operatingSystem != "js" {
+		PrintString(15, 23, "Press Esc or Ctrl-C to Quit to exit this program")
+	}
 	if cheat {
 		PrintString(73, 23, "(cheat)")
 	}

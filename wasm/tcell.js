@@ -191,5 +191,5 @@ document.addEventListener("paste", e => {
 
 const go = new Go();
 WebAssembly.instantiateStreaming(fetch(wasmFilePath), go.importObject).then((result) => {
-    go.run(result.instance);
+        go.run(result.instance)
 });
