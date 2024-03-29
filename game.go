@@ -211,58 +211,58 @@ func (g Game) DrawScreen(m Maze) {
 	//====================================
 	if viewPort[1][0] {
 		for ix := 10; ix < 12; ix++ {
-			PrintString(30, ix, "███")
+			drawSideWall(30, ix, "###")
 		}
 	} else {
-		PrintString(30, 10, "░░░")
-		PrintString(30, 11, "░░░")
+		drawFacingWall(30, 10, "***")
+		drawFacingWall(30, 11, "***")
 	}
 
 	if viewPort[1][2] {
 		for ix := 10; ix < 12; ix++ {
-			PrintString(36, ix, "███")
+			drawSideWall(36, ix, "###")
 		}
 	} else {
-		PrintString(36, 10, "░░░")
-		PrintString(36, 11, "░░░")
+		drawFacingWall(36, 10, "***")
+		drawFacingWall(36, 11, "***")
 	}
 
 	if viewPort[1][1] {
-		PrintString(33, 10, "░░░")
-		PrintString(33, 11, "░░░")
+		drawFacingWall(33, 10, "***")
+		drawFacingWall(33, 11, "***")
 	}
 	//====================================
 
 	//====================================
 	if viewPort[2][0] {
 		for ix := 8; ix < 14; ix++ {
-			PrintString(24, ix, "███")
+			drawSideWall(24, ix, "###")
 			if ix > 8 && ix < 13 {
-				PrintString(27, ix, "███")
+				drawSideWall(27, ix, "###")
 			}
 		}
 	} else {
 		for ix := 10; ix < 12; ix++ {
-			PrintString(24, ix, "░░░░░░")
+			drawFacingWall(24, ix, "******")
 		}
 	}
 
 	if viewPort[2][2] {
 		for ix := 8; ix < 14; ix++ {
-			PrintString(42, ix, "███")
+			drawSideWall(42, ix, "###")
 			if ix > 8 && ix < 13 {
-				PrintString(39, ix, "███")
+				drawSideWall(39, ix, "###")
 			}
 		}
 	} else {
 		for ix := 10; ix < 12; ix++ {
-			PrintString(39, ix, "░░░░░░")
+			drawFacingWall(39, ix, "******")
 		}
 	}
 
 	if viewPort[2][1] {
 		for ix := 9; ix < 13; ix++ {
-			PrintString(30, ix, "░░░░░░░░░")
+			drawFacingWall(30, ix, "*********")
 		}
 	}
 	//====================================
@@ -270,33 +270,33 @@ func (g Game) DrawScreen(m Maze) {
 	//====================================
 	if viewPort[3][0] {
 		for ix := 6; ix < 16; ix++ {
-			PrintString(18, ix, "███")
+			drawSideWall(18, ix, "###")
 			if ix > 6 && ix < 15 {
-				PrintString(21, ix, "███")
+				drawSideWall(21, ix, "###")
 			}
 		}
 	} else {
 		for ix := 8; ix < 14; ix++ {
-			PrintString(18, ix, "░░░░░░")
+			drawFacingWall(18, ix, "******")
 		}
 	}
 
 	if viewPort[3][2] {
 		for ix := 6; ix < 16; ix++ {
-			PrintString(48, ix, "███")
+			drawSideWall(48, ix, "###")
 			if ix > 6 && ix < 15 {
-				PrintString(45, ix, "███")
+				drawSideWall(45, ix, "###")
 			}
 		}
 	} else {
 		for ix := 8; ix < 14; ix++ {
-			PrintString(45, ix, "░░░░░░")
+			drawFacingWall(45, ix, "******")
 		}
 	}
 
 	if viewPort[3][1] {
 		for ix := 7; ix < 15; ix++ {
-			PrintString(24, ix, "░░░░░░░░░░░░░░░░░░░░░")
+			drawFacingWall(24, ix, "*********************")
 		}
 	}
 	//====================================
@@ -304,39 +304,39 @@ func (g Game) DrawScreen(m Maze) {
 	//====================================
 	if viewPort[4][0] {
 		for ix := 3; ix < 19; ix++ {
-			PrintString(9, ix, "███")
+			drawSideWall(9, ix, "###")
 			if ix > 3 && ix < 18 {
-				PrintString(12, ix, "███")
+				drawSideWall(12, ix, "###")
 			}
 			if ix > 4 && ix < 17 {
-				PrintString(15, ix, "███")
+				drawSideWall(15, ix, "###")
 			}
 		}
 	} else {
 		for ix := 6; ix < 16; ix++ {
-			PrintString(9, ix, "░░░░░░░░░")
+			drawFacingWall(9, ix, "*********")
 		}
 	}
 
 	if viewPort[4][2] {
 		for ix := 3; ix < 19; ix++ {
-			PrintString(57, ix, "███")
+			drawSideWall(57, ix, "###")
 			if ix > 3 && ix < 18 {
-				PrintString(54, ix, "███")
+				drawSideWall(54, ix, "###")
 			}
 			if ix > 4 && ix < 17 {
-				PrintString(51, ix, "███")
+				drawSideWall(51, ix, "###")
 			}
 		}
 	} else {
 		for ix := 6; ix < 16; ix++ {
-			PrintString(51, ix, "░░░░░░░░░")
+			drawFacingWall(51, ix, "*********")
 		}
 	}
 
 	if viewPort[4][1] {
 		for ix := 3; ix < 19; ix++ {
-			PrintString(9, ix, "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░")
+			drawFacingWall(9, ix, "****************************************************")
 		}
 	}
 	//====================================
@@ -345,17 +345,17 @@ func (g Game) DrawScreen(m Maze) {
 	//Closest wall left
 	if viewPort[5][0] {
 		for ix := 0; ix < 22; ix++ {
-			PrintString(0, ix, "███")
+			drawSideWall(0, ix, "###")
 			if ix > 0 && ix < 21 {
-				PrintString(3, ix, "███")
+				drawSideWall(3, ix, "###")
 			}
 			if ix > 1 && ix < 20 {
-				PrintString(6, ix, "███")
+				drawSideWall(6, ix, "###")
 			}
 		}
 	} else {
 		for ix := 3; ix < 19; ix++ {
-			PrintString(0, ix, "░░░░░░░░░")
+			drawFacingWall(0, ix, "*********")
 		}
 	}
 
@@ -364,17 +364,17 @@ func (g Game) DrawScreen(m Maze) {
 	//Closest wall right
 	if viewPort[5][2] {
 		for ix := 0; ix < 22; ix++ {
-			PrintString(66, ix, "███")
+			drawSideWall(66, ix, "###")
 			if ix > 0 && ix < 21 {
-				PrintString(63, ix, "███")
+				drawSideWall(63, ix, "###")
 			}
 			if ix > 1 && ix < 20 {
-				PrintString(60, ix, "███")
+				drawSideWall(60, ix, "###")
 			}
 		}
 	} else {
 		for ix := 3; ix < 19; ix++ {
-			PrintString(60, ix, "░░░░░░░░░")
+			drawFacingWall(60, ix, "*********")
 		}
 	}
 	//====================================
@@ -389,17 +389,19 @@ func (g Game) DrawScreen(m Maze) {
 func (g *Game) PrintMaze(m Maze) {
 	//Draw the full map on the screen as a 2d grid.
 	style := tcell.StyleDefault.Foreground(tcell.ColorBlack).Background(tcell.ColorWhite)
+	styleWall := tcell.StyleDefault.Foreground(tcell.ColorBlack).Background(tcell.ColorBlack)
+	styleGap := tcell.StyleDefault.Foreground(tcell.ColorWhite).Background(tcell.ColorWhite)
 
 	g.ClearScreen()
 
 	for i := 0; i < m.rows; i++ {
 		for j := 0; j < m.cols; j++ {
 			if m.grid[i][j] {
-				g.screen.SetContent(j*2, i, '█', nil, style)
-				g.screen.SetContent(j*2+1, i, '█', nil, style)
+				g.screen.SetContent(j*2, i, ' ', nil, styleWall)
+				g.screen.SetContent(j*2+1, i, ' ', nil, styleWall)
 			} else {
-				g.screen.SetContent(j*2, i, ' ', nil, style)
-				g.screen.SetContent(j*2+1, i, ' ', nil, style)
+				g.screen.SetContent(j*2, i, ' ', nil, styleGap)
+				g.screen.SetContent(j*2+1, i, ' ', nil, styleGap)
 			}
 		}
 	}
@@ -497,5 +499,25 @@ func (g Game) CullExitSideWalls(m Maze) {
 		case -1:
 			g.ClearScreen()
 		}
+	}
+}
+
+func drawSideWall(x, y int, str string) {
+	//This is an alternative version of the printStrng function that
+	//sets the forecround and background to black, in an attempt to make the
+	//game look consistent across different operating systems.
+	style := tcell.StyleDefault.Foreground(tcell.ColorBlack).Background(tcell.ColorBlack)
+	ix := 0 //Set the index for printing on the x axis. This is because runes can be more than 8 bits.
+	for _, ch := range str {
+		screen.SetContent(x+ix, y, ch, nil, style)
+		ix++
+	}
+}
+func drawFacingWall(x, y int, str string) {
+	style := tcell.StyleDefault.Foreground(tcell.ColorGray).Background(tcell.ColorGray)
+	ix := 0 //Set the index for printing on the x axis. This is because runes can be more than 8 bits.
+	for _, ch := range str {
+		screen.SetContent(x+ix, y, ch, nil, style)
+		ix++
 	}
 }

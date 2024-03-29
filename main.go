@@ -53,6 +53,9 @@ func initScreen() tcell.Screen {
 		fmt.Printf("Error initializing screen: %s\n", err)
 		os.Exit(99)
 	}
+
+	tcell.SetEncodingFallback(tcell.EncodingFallbackASCII)
+
 	screen.SetStyle(tcell.StyleDefault.
 		Background(tcell.ColorWhite).
 		Foreground(tcell.ColorBlack))
