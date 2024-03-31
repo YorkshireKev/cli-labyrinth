@@ -76,7 +76,7 @@ func showTitle(cheat bool) (rows int, cols int) {
 	PrintString(6, 7, "#       #     # #     #    #    #    #   #  #    ##    #    #     #")
 	PrintString(6, 8, "####### #     # ######     #    #     # ### #     #    #    #     #")
 	PrintString(22, 10, "©2024 By Kev Ellis - www.kevssite.com")
-	PrintString(37, 11, "(v0.2)")
+	PrintString(37, 11, "(v0.3)")
 	PrintString(2, 16, "Please select your maze size: Press S for Small, M for Medium or L for Large")
 	if operatingSystem != "js" {
 		PrintString(15, 23, "Press Esc or Ctrl-C to Quit to exit this program")
