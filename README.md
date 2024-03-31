@@ -20,6 +20,8 @@ Please note that you'll need to ensure that the file has the executable flag set
 
 If you want to download directly onto a Linux server via the command line, then there are instructions in the [Github release](https://github.com/YorkshireKev/cli-labyrinth/releases)
 
+You can also [play CLI-Labyrinth directly in your web-browser](https://www.kevsite.com/cli-labyrinth).
+
 ## Inspiration
 
 CLI-Labyrinth was inspired by the classic 16k Sinclair ZX81 game called Labyrinth, originally written in 1981. If you enjoy maze games, it's worth checking out the original—it's much better than my "modern" version.
