@@ -20,7 +20,7 @@ Please note that you'll need to ensure that the file has the executable flag set
 
 If you want to download directly onto a Linux server via the command line, then there are instructions in the [Github release](https://github.com/YorkshireKev/cli-labyrinth/releases)
 
-You can also [play CLI-Labyrinth directly in your web-browser](https://www.kevsite.com/cli-labyrinth).
+You can also [play CLI-Labyrinth directly in your web-browser](https://www.kevssite.com/cli-labyrinth/).
 
 ## Inspiration
 
